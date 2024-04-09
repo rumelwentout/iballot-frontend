@@ -1,7 +1,21 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  Wrap,
+  WrapItem
+} from '@chakra-ui/react';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../Logo';
+import { useAuthentication } from '../../../../hooks/useAuthentication';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const NavLeftItems = () => {
   const leftItems = [
@@ -26,55 +40,135 @@ const NavLeftItems = () => {
   );
 };
 
+const NavItem = ({ label, type }) => {
+  return (
+    <Button
+      variant={type}
+      fontWeight={'500'}
+      fontSize={'14px'}
+      colorScheme={type === 'solid' && 'primary'}
+    >
+      {label}
+    </Button>
+  );
+};
 const NavRightItems = () => {
-  const NavItem = ({ label, type }) => {
-    return (
-      <Button
-        variant={type}
-        fontWeight={'500'}
-        fontSize={'14px'}
-        colorScheme={type === 'solid' && 'primary'}
-      >
-        {label}
-      </Button>
-    );
-  };
+  const { isLoggedIn, logout } = useAuthentication();
+  const navigate = useNavigate();
+
   const rightItems = [
+    // {
+    //   type: 'LINK_BTN',
+    //   label: 'Caste Vote',
+    //   component: NavItem,
+    //   link: '/'
+    // },
+    // {
+    //   type: 'LINK_BTN',
+    //   label: 'Create Organization',
+    //   component: NavItem,
+    //   link: '/'
+    // },
     {
       type: 'LINK_BTN',
-      label: 'Caste Vote',
+      label: 'Dashboard',
+      requiredAuth: true,
       component: NavItem,
-      link: '/'
+      link: '/dashboard'
     },
     {
       type: 'LINK_BTN',
-      label: 'Create Organization',
+      label: 'Join Organization',
+      requiredAuth: true,
       component: NavItem,
-      link: '/'
+      link: '/organization/add'
     },
+    {
+      type: 'LINK_BTN',
+      label: 'Elections',
+      requiredAuth: true,
+      component: NavItem,
+      link: '/organization/view'
+    },
+
     {
       type: 'LINK_BTN',
       label: 'Sign up',
+      requiredAuth: false,
       component: NavItem,
       link: '/auth/register'
     },
+
     {
       type: 'PRIMARY_BTN',
+      requiredAuth: false,
       label: 'Sign in',
       component: NavItem,
       link: '/auth/login'
     }
   ];
+
+  const menuList = [
+    {
+      label: 'Profile',
+      action: '',
+      link: ''
+    },
+    {
+      label: 'Settings',
+      action: '',
+      link: ''
+    },
+    {
+      label: 'Logout',
+      action: () => logout(),
+      link: ''
+    }
+  ];
+  const menuItemStyle = { bg: 'primary.50', color: 'Black' };
+
   return (
     <Flex gap={'32px'} alignItems={'center'}>
-      {rightItems.map((item) => (
-        <Link to={item.link} key={item.label}>
-          <item.component
-            label={item.label}
-            type={item.type === 'LINK_BTN' ? 'link' : 'solid'}
-          />
-        </Link>
-      ))}
+      {rightItems.map((item) => {
+        const shouldRender =
+          (isLoggedIn && item.requiredAuth) ||
+          (!isLoggedIn && !item.requiredAuth);
+
+        return shouldRender ? (
+          <Link to={item.link} key={item.label}>
+            <item.component
+              label={item.label}
+              type={item.type === 'LINK_BTN' ? 'link' : 'solid'}
+            />
+          </Link>
+        ) : null;
+      })}
+      {isLoggedIn && (
+        <Menu>
+          <MenuButton rightIcon={<ChevronDownIcon />}>
+            <Box as={Button} rounded={'full'} bg={'none'}>
+              <Avatar name="Shahriar Rumel" src="https://avatars.githubusercontent.com/u/71602274?v=4" />
+            </Box>
+          </MenuButton>
+          <MenuList>
+            {menuList.map((menu,index) => (
+              <MenuItem
+                fontSize="14px"
+                _hover={menuItemStyle}
+                _active={menuItemStyle}
+                _focus={menuItemStyle}
+                onClick={() => {
+                  menu.link ? navigate(menu.link) : menu.action();
+                }}
+                borderTopWidth={index===menuList.length-1 && '1px'}
+                marginTop={index===menuList.length-1 && '5px'}
+              >
+                {menu.label}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      )}
     </Flex>
   );
 };

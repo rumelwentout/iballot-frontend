@@ -10,16 +10,16 @@ const validationSchema = {};
 
 const HeroRight = () => {
   return (
-    <Box position={'relative'}>
+    <Box position={'relative'} w={'40%'}>
       <Box pos={'absolute'} top={-100} zIndex={-1} left={-100}>
         <Shapes />
       </Box>
       <Box
-        w={'350px'}
+        w={'380px'}
         bg={'white'}
-        shadow={'2xl'}
-        px={'20px'}
-        py={'20px'}
+        // shadow={'2xl'}
+        px={'25px'}
+        py={'25px'}
         rounded={'12px'}
       >
         <Formik
@@ -35,37 +35,39 @@ const HeroRight = () => {
           }}
         >
           <Form>
-            <Heading as={'h3'} textAlign={'center'} mb={'30px'}>
-              Register Now
+            <Heading as={'h3'} fontSize={'32px'} letterSpacing={-1} textAlign={'center'} mb={'30px'}>
+              Sign Up Now
             </Heading>
             <FormInput
               label="Name"
               name="name"
               type={'text'}
-              placeholder={'Enter your name'}
+              // placeholder={'Enter your name'}
             />
             <FormInput
               label="Password"
               type={'text'}
               name="name"
-              placeholder={'Enter your name'}
+              // placeholder={'Enter your name'}
             />
             <FormInput
               label="Institution"
               type={'select'}
               name="institution"
               options={['Option 1', 'Option 2', 'Option 3']}
-              placeholder={'Enter your name'}
+              // placeholder={'Enter your name'}
             />
-            <Button colorScheme="primary" w={'100%'}>
-              Register
-            </Button>
+            <Link to="onboarding">
+              <Button colorScheme="primary" w={'100%'}>
+                Sign Up
+              </Button>
+            </Link>
             <Text textAlign={'center'} mt={'20px'} mb={'10px'}>
               Already have an account?{' '}
               <Link to="/auth/login">
-              <Button variant={'link'} colorScheme="primary">
-                Login
-              </Button>
+                <Button variant={'link'} colorScheme="primary">
+                  Sign in
+                </Button>
               </Link>
             </Text>
           </Form>

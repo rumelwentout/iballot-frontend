@@ -1,0 +1,9 @@
+body {
+  background-color: rgb(246, 246, 246) !important;
+}
+
+th,
+tr,
+td {
+  border-color: #3333332a !important;
+}

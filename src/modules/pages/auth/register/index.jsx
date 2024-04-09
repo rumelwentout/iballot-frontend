@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import React from 'react';
 import FormInput from '../../../shared/components/FormInput';
@@ -24,17 +24,17 @@ const index = () => {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Box w={'100px'}>
-          <LogoIcon />
-        </Box>
         <Box
           w={'450px'}
-          bg={'white'}
+          // bg={'white'}
           // shadow={'2xl'}
           px={'20px'}
           py={'20px'}
           rounded={'12px'}
         >
+          <Box w={'60px'} m={'0 auto'}>
+            <LogoIcon />
+          </Box>
           <Formik
             enableReinitialize={true}
             initialValues={initialValues}
@@ -48,7 +48,14 @@ const index = () => {
             }}
           >
             <Form>
-              <Heading as={'h3'} textAlign={'center'} mb={'10px'}>
+              <Heading
+                as={'h3'}
+                fontSize="32px"
+                letterSpacing={-1}
+                textAlign={'center'}
+                mt={'20px'}
+                mb={'5px'}
+              >
                 Create a new account
               </Heading>
               <Text textAlign={'center'} mt={'10px'} mb={'30px'}>
@@ -59,25 +66,39 @@ const index = () => {
                   </Button>
                 </Link>
               </Text>
-              <FormInput
-                label="Name"
-                name="name"
-                type={'text'}
-                placeholder={'Enter your name'}
-              />
+              {/* <Flex justifyContent={'space-between'} gap={'20px'}> */}
+                <FormInput
+                  label="Name"
+                  name="name"
+                  type={'text'}
+                  // placeholder={'Enter your name'}
+                />
+                <FormInput
+                  label="Email"
+                  name="name"
+                  type={'text'}
+                  // placeholder={'Enter your name'}
+                />
+              {/* </Flex> */}
               <FormInput
                 label="Password"
                 type={'text'}
                 name="name"
-                placeholder={'Enter your name'}
+                // placeholder={'Enter your name'}
               />
               <FormInput
+                label="Confirm Password"
+                type={'text'}
+                name="name"
+                // placeholder={'Enter your name'}
+              />
+              {/* <FormInput
                 label="Institution"
                 type={'select'}
                 name="institution"
                 options={['Option 1', 'Option 2', 'Option 3']}
                 placeholder={'Enter your name'}
-              />
+              /> */}
               <Button colorScheme="primary" w={'100%'}>
                 Sign Up
               </Button>
