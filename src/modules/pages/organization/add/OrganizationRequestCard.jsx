@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import LogoIcon from '../../../shared/components/LogoIcon';
 import { AddIcon } from '@chakra-ui/icons';
 
-const OrganizationRequestCard = () => {
+const OrganizationRequestCard = ({name}) => {
   const [loading, setLoading] = useState(false);
   return (
     <Flex
@@ -33,7 +33,7 @@ const OrganizationRequestCard = () => {
       </Flex>
       <Box mt={'20px'}>
         <Text fontWeight={'600'} fontSize={'20px'}>
-          Csedu Alumni Association
+          {name}
         </Text>
         <Flex alignItems={'center'} gap={'10px'}>
           <Text fontWeight={'500'} fontSize={'12px'} my={'2px'}>

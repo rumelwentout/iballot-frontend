@@ -46,12 +46,6 @@ const index = () => {
     }
   }, [mutation.isSuccess]);
 
-  const tokenRegex = /(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/;
-  const tokenMatch = document.cookie.match(tokenRegex);
-  const token = tokenMatch ? tokenMatch[1] : null;
-
-  console.log('Document cookie:', document.cookie);
-  console.log('Extracted token:', token);
   return (
     <MainLayout>
       <Box

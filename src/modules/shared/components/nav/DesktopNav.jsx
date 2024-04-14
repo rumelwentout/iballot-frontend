@@ -147,25 +147,48 @@ const NavRightItems = () => {
         <Menu>
           <MenuButton rightIcon={<ChevronDownIcon />}>
             <Box as={Button} rounded={'full'} bg={'none'}>
-              <Avatar name="Shahriar Rumel" src="https://avatars.githubusercontent.com/u/71602274?v=4" />
+              <Avatar
+                name="Shahriar Rumel"
+                src="https://avatars.githubusercontent.com/u/71602274?v=4"
+              />
             </Box>
           </MenuButton>
           <MenuList>
-            {menuList.map((menu,index) => (
-              <MenuItem
-                fontSize="14px"
-                _hover={menuItemStyle}
-                _active={menuItemStyle}
-                _focus={menuItemStyle}
-                onClick={() => {
-                  menu.link ? navigate(menu.link) : menu.action();
-                }}
-                borderTopWidth={index===menuList.length-1 && '1px'}
-                marginTop={index===menuList.length-1 && '5px'}
-              >
-                {menu.label}
-              </MenuItem>
-            ))}
+            {menuList.map((menu, index) => {
+              if (index === menuList.length - 1)
+                return (
+                  <MenuItem
+                    _hover={{ bg: 'none', cursor: 'default' }}
+                    _active={{ bg: 'none', cursor: 'default' }}
+                    _focus={{ bg: 'none', cursor: 'default' }}
+                    key={index}
+                  >
+                    <Button
+                      size={'sm'}
+                      colorScheme="primary"
+                      onClick={() => {
+                        menu.link ? navigate(menu.link) : menu.action();
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </MenuItem>
+                );
+              return (
+                <MenuItem
+                  fontSize="14px"
+                  _hover={menuItemStyle}
+                  _active={menuItemStyle}
+                  _focus={menuItemStyle}
+                  key={index}
+                  onClick={() => {
+                    menu.link ? navigate(menu.link) : menu.action();
+                  }}
+                >
+                  {menu.label}
+                </MenuItem>
+              );
+            })}
           </MenuList>
         </Menu>
       )}

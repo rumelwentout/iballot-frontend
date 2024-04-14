@@ -17,28 +17,31 @@ import {
 import React, { useState } from 'react';
 import UploadIcon from '../../shared/components/UploadIcon';
 import { useNavigate } from 'react-router-dom';
+import WebCamComponent from './Webcam';
+import { Form, Formik, useField } from 'formik';
+import Reload from './Reload';
 
 const steps = [
-  { title: 'Onboarding 01', description: 'Front Facing Selfie' },
-  { title: 'Onboarding 02', description: 'Right Facing Selfie' },
-  { title: 'Onboarding 03', description: 'Left Facing Selfie' }
+  { title: 'Upload Photo ID', description: 'Front Facing Selfie' },
+  { title: 'Take Selfie', description: 'Right Facing Selfie' },
+  { title: 'Get Verified', description: 'Left Facing Selfie' }
 ];
 
 const stages = [
   {
-    stageHeader: 'Upload Front Facing Selfie',
+    stageHeader: 'Upload Your Photo ID',
     stageDescription:
       'We will use this to verify your identity in the future for your voting security.'
   },
   {
-    stageHeader: 'Upload Right Facing Selfie',
+    stageHeader: 'Take a Front Facing Selfie',
     stageDescription:
-      'We will use this to verify your identity in the future for your voting security.'
+      'We will use this to match your identity with the provided photo ID.'
   },
   {
-    stageHeader: 'Upload Left Facing Selfie',
+    stageHeader: 'Submit for Verification',
     stageDescription:
-      'We will use this to verify your identity in the future for your voting security.'
+      'We will cross check the documents and verify your account.'
   }
 ];
 
@@ -68,7 +71,7 @@ const OnboardingStepper = ({ step }) => {
 
           <Box flexShrink="0">
             <StepTitle>{step.title}</StepTitle>
-            <StepDescription>{step.description}</StepDescription>
+            {/* <StepDescription>{step.description}</StepDescription> */}
           </Box>
 
           <StepSeparator />
@@ -78,17 +81,48 @@ const OnboardingStepper = ({ step }) => {
   );
 };
 
-const ImageUploader = () => {
-  const [img, setImg] = useState('');
+const ImageUploader = ({
+  title = 'Click here to upload your image',
+  acceptedType = 'Accepted file type- JPG, PNG',
+  name = 'photoID'
+}) => {
+  // const [img, setImg] = useState('');
+  const [field, meta, helpers] = useField({ name });
 
   const ImagePreview = () => {
-    return <Box></Box>;
+    const clearImage = () => {
+      helpers.setValue('');
+    };
+    return (
+      <Box
+        backgroundImage={`url(${URL.createObjectURL(field.value)})`}
+        h={'100%'}
+        w="100%"
+        backgroundPosition={'center'}
+        bgSize={'cover'}
+        display={'flex'}
+        justifyContent={'center'}
+        alignItems={'end'}
+        padding={'20px 0px'}
+      >
+        <Box cursor={'pointer'} onClick={clearImage}>
+          <Reload />
+        </Box>
+      </Box>
+    );
   };
+  const uploadhandler = (e) => {
+    e.preventDefault();
+    helpers.setValue(e.target.files[0]);
+    // setImg(URL.createObjectURL(e.target.files[0]));
+    console.log(e.target.files[0]);
+  };
+  console.log(field.value);
   const UploadPlaceHolder = () => {
     return (
       <Box>
         <label
-          htmlFor="selfie-image"
+          htmlFor="photoID"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -106,16 +140,17 @@ const ImageUploader = () => {
           textTransform={'capitalize'}
           fontSize={'14px'}
         >
-          Click here to upload your selfie
+          {title}
         </Text>
         <Text textAlign={'center'} fontWeight={'500'} fontSize={'12px'}>
-          Accepted file type- JPG, PNG
+          {acceptedType}
         </Text>
         <input
           hidden
           type="file"
-          name="selfie-image"
-          id="selfie-image"
+          name="photoID"
+          id="photoID"
+          onChange={uploadhandler}
           accept="image/png,image/jpg"
         />
       </Box>
@@ -130,7 +165,7 @@ const ImageUploader = () => {
       my={'20px'}
       borderColor={'gray.400'}
     >
-      {img ? <ImagePreview /> : <UploadPlaceHolder />}
+      {field.value ? <ImagePreview /> : <UploadPlaceHolder />}
     </Box>
   );
 };
@@ -142,6 +177,17 @@ const UploadSelfie = () => {
     count: 3
   });
   const navigate = useNavigate();
+
+  const getStepContent = () => {
+    switch (activeStep) {
+      case 0:
+        return <ImageUploader />;
+      case 1:
+        return <WebCamComponent />;
+      case 2:
+        return <ImageUploader />;
+    }
+  };
   return (
     <Box
       bg={'white'}
@@ -163,33 +209,57 @@ const UploadSelfie = () => {
         {stages[activeStep].stageDescription}
       </Text>
       <OnboardingStepper step={activeStep} />
-      <ImageUploader />
-      <Flex justifyContent={'space-between'} mt={'20px'}>
-        <Button
-          colorScheme="primary"
-          variant={'outline'}
-          w={'100px'}
-          isDisabled={activeStep === 0 ? true : false}
-          onClick={() =>
-            setActiveStep((prev) => (activeStep >= 1 ? prev - 1 : prev))
-          }
-        >
-          Prev
-        </Button>
-        <Button
-          colorScheme="primary"
-          w={'100px'}
-          onClick={() => {
-            if (activeStep < 2) {
-              setActiveStep((prev) => prev + 1);
-            } else {
-              navigate('/dashboard');
-            }
-          }}
-        >
-          {activeStep === 2 ? 'Finish' : 'Next'}
-        </Button>
-      </Flex>
+      <Formik
+        initialValues={{ photoID: '', selfie: '' }}
+        onSubmit={(values, { setSubmitting }) => {
+          // mutation.mutate({
+          //   fullname: values.fullName,
+          //   email: values.email,
+          //   password: values.password,
+          //   institution: values.institution
+          // });
+        }}
+      >
+        {({ values }) => {
+          const getNextBtnState = () => {
+            if (values?.selfie && activeStep == 1) return false;
+            if (values?.photoID?.name && activeStep == 0) return false;
+            return true;
+          };
+          return (
+            <Form>
+              {getStepContent()}
+              <Flex justifyContent={'space-between'} mt={'20px'}>
+                <Button
+                  colorScheme="primary"
+                  variant={'outline'}
+                  w={'100px'}
+                  isDisabled={activeStep === 0 ? true : false}
+                  onClick={() =>
+                    setActiveStep((prev) => (activeStep >= 1 ? prev - 1 : prev))
+                  }
+                >
+                  Prev
+                </Button>
+                <Button
+                  colorScheme="primary"
+                  w={'100px'}
+                  onClick={() => {
+                    if (activeStep < 2) {
+                      setActiveStep((prev) => prev + 1);
+                    } else {
+                      navigate('/dashboard');
+                    }
+                  }}
+                  isDisabled={getNextBtnState()}
+                >
+                  {activeStep === 2 ? 'Finish' : 'Next'}
+                </Button>
+              </Flex>
+            </Form>
+          );
+        }}
+      </Formik>
     </Box>
   );
 };

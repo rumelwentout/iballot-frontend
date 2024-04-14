@@ -19,7 +19,7 @@ const TextInput = ({ name, placeholder }) => {
     ></Input>
   );
 };
-const SelectInput = ({ name, placeholder,options }) => {
+const SelectInput = ({ name, placeholder, options }) => {
   const [field, meta, helpers] = useField({ name });
   return (
     <Select
@@ -28,10 +28,10 @@ const SelectInput = ({ name, placeholder,options }) => {
       name={name}
       focusBorderColor="primary.500"
       placeholder={placeholder}
-      // value={field.value}
+      defaultValue={placeholder}
     >
-      {options?.map((option) => (
-        <option>{option}</option>
+      {options?.map((option, index) => (
+        <option disabled={index === 0} value={option}>{option}</option>
       ))}
     </Select>
   );
@@ -42,7 +42,13 @@ const FormInput = ({ name, label, type, options, placeholder }) => {
       case 'text':
         return <TextInput name={name} placeholder={placeholder} />;
       case 'select':
-        return <SelectInput name={name} placeholder={placeholder} options={options}/>;
+        return (
+          <SelectInput
+            name={name}
+            placeholder={placeholder}
+            options={options}
+          />
+        );
     }
   };
   return (
@@ -51,7 +57,7 @@ const FormInput = ({ name, label, type, options, placeholder }) => {
         {label}
       </Text>
       {getInput(type)}
-      <Text color={'red.500'}>
+      <Text color={'red.500'} fontSize={'14px'} mt={'5px'} fontWeight={'500'}>
         <ErrorMessage name={name} />
       </Text>
     </Box>

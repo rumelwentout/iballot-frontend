@@ -1,20 +1,63 @@
-import { Box, Button, Flex, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, Text } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
-import React from 'react';
+import React, { useEffect } from 'react';
 import FormInput from '../../../shared/components/FormInput';
-import Logo from '../../../shared/components/Logo';
 import LogoIcon from '../../../shared/components/LogoIcon';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MainLayout from '../../../layout/MainLayout';
+import { useMutation } from 'react-query';
+import * as Yup from 'yup';
+import { toast } from 'sonner';
+import axios from 'axios';
 
 const initialValues = {
-  name: '',
-  email: ''
+  fullName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  institution: ''
 };
 
-const validationSchema = {};
+const validationSchema = Yup.object({
+  fullName: Yup.string().required('Full name is required'),
+  email: Yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  password: Yup.string()
+    .min(8, 'Password must be at least 8 characters')
+    .required('Password is required'),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
+    .required('Confirm password is required')
+});
 
 const index = () => {
+  const mutation = useMutation({
+    mutationFn: (data) => {
+      return axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/user/signup`,
+        data
+      );
+    }
+  });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (mutation.isError) {
+      toast.error(mutation.error);
+    }
+  }, [mutation.isError]);
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      toast.success('Your registration is successful!');
+      console.log(mutation.data.data.access_token);
+      document.cookie = `token=${mutation.data.data.access_token}; path=/;`;
+      navigate('/onboarding');
+    }
+  }, [mutation.isSuccess]);
+
   return (
     <MainLayout>
       <Box
@@ -24,14 +67,7 @@ const index = () => {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Box
-          w={'450px'}
-          // bg={'white'}
-          // shadow={'2xl'}
-          px={'20px'}
-          py={'20px'}
-          rounded={'12px'}
-        >
+        <Box w={'450px'} px={'20px'} py={'20px'} rounded={'12px'}>
           <Box w={'60px'} m={'0 auto'}>
             <LogoIcon />
           </Box>
@@ -40,11 +76,12 @@ const index = () => {
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values, { setSubmitting }) => {
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                // props.handleSubmit(values);
-                setSubmitting(false);
-              }, 400);
+              mutation.mutate({
+                fullname: values.fullName,
+                email: values.email,
+                password: values.password,
+                institution: values.institution
+              });
             }}
           >
             <Form>
@@ -66,40 +103,28 @@ const index = () => {
                   </Button>
                 </Link>
               </Text>
-              {/* <Flex justifyContent={'space-between'} gap={'20px'}> */}
-                <FormInput
-                  label="Name"
-                  name="name"
-                  type={'text'}
-                  // placeholder={'Enter your name'}
-                />
-                <FormInput
-                  label="Email"
-                  name="name"
-                  type={'text'}
-                  // placeholder={'Enter your name'}
-                />
-              {/* </Flex> */}
+
+              <FormInput label="Full Name*" name="fullName" type={'text'} />
+              <FormInput label="Email*" name="email" type={'text'} />
+              <FormInput label="Password*" type={'text'} name="password" />
               <FormInput
-                label="Password"
+                label="Confirm Password*"
                 type={'text'}
-                name="name"
-                // placeholder={'Enter your name'}
+                name="confirmPassword"
               />
               <FormInput
-                label="Confirm Password"
-                type={'text'}
-                name="name"
-                // placeholder={'Enter your name'}
-              />
-              {/* <FormInput
                 label="Institution"
                 type={'select'}
                 name="institution"
-                options={['Option 1', 'Option 2', 'Option 3']}
-                placeholder={'Enter your name'}
-              /> */}
-              <Button colorScheme="primary" w={'100%'}>
+                options={['Select', 'CSEDU']}
+              />
+
+              <Button
+                type="submit"
+                isLoading={mutation.isLoading}
+                colorScheme="primary"
+                w={'100%'}
+              >
                 Sign Up
               </Button>
               <Text mt={'30px'} textAlign={'center'} fontSize={'14px'}>
