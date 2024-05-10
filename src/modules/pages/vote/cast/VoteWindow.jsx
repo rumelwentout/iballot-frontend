@@ -18,6 +18,8 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import WebCamComponent from '../../../shared/components/Webcam';
+import { Form, Formik } from 'formik';
 
 const steps = [
   { title: 'Verify Identity', description: 'Put the camera on your face' },
@@ -144,6 +146,15 @@ const VoteWindow = () => {
     count: 3
   });
   const navigate = useNavigate();
+
+  const getStepContent = () => {
+    switch (activeStep) {
+      case 0:
+        return <WebCamComponent />;
+      case 1:
+        return <WebCamComponent />;
+    }
+  };
   return (
     <Box
       bg={'white'}
@@ -178,20 +189,13 @@ const VoteWindow = () => {
       >
         {stages[activeStep].stageDescription}
       </Text>
-      <OnboardingStepper step={activeStep} />
-      {/* <ImageUploader /> */}
-      <Flex justifyContent={'space-between'} mt={'20px'}>
-        <Button
-          colorScheme="primary"
-          variant={'outline'}
-          w={'100px'}
-          isDisabled={activeStep === 0 ? true : false}
-          onClick={() =>
-            setActiveStep((prev) => (activeStep >= 1 ? prev - 1 : prev))
-          }
-        >
-          Prev
-        </Button>
+      <Formik
+        initialValues={{ photoID: '', selfie: '' }}
+        onSubmit={(values, { setSubmitting }) => {}}
+      >
+        <Form>{getStepContent()}</Form>
+      </Formik>
+      <Flex justifyContent={'center'} mt={'20px'}>
         <Button
           colorScheme="primary"
           w={'100px'}

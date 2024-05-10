@@ -2,7 +2,7 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import React, { useCallback, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { toast } from 'sonner';
-import Reload from './Reload';
+import Reload from '../../pages/onboarding/Reload';
 import { useField } from 'formik';
 
 const FacePlaceholder = () => {

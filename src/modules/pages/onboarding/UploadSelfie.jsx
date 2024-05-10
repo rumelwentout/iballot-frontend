@@ -17,7 +17,7 @@ import {
 import React, { useState } from 'react';
 import UploadIcon from '../../shared/components/UploadIcon';
 import { useNavigate } from 'react-router-dom';
-import WebCamComponent from './Webcam';
+import WebCamComponent from '../../shared/components/Webcam';
 import { Form, Formik, useField } from 'formik';
 import Reload from './Reload';
 
