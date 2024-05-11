@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 // import './index.css';
 
+window.global = window;
+
 const pallets = {
   primaryBlue: {
     100: '#d4e0fb',

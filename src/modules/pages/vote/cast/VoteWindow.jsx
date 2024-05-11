@@ -1,4 +1,4 @@
-import { CloseIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -20,69 +20,36 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import WebCamComponent from '../../../shared/components/Webcam';
 import { Form, Formik } from 'formik';
-
-const steps = [
-  { title: 'Verify Identity', description: 'Put the camera on your face' },
-  {
-    title: 'Choose Candidate',
-    description: 'Select the candidate(s) of your choice'
-  },
-  { title: 'Cast Vote', description: 'Submit the vote' }
-];
+import Banner from './Banner';
+import Position from './Position';
+import { act } from 'react';
 
 const stages = [
   {
-    stageHeader: 'Identity Verification Required',
+    stageHeader: 'Univeristy of Oxford Union',
     stageDescription:
-      'Please position your face within the frame to facilitate your identity verification process.'
+      'Please position your face within the frame to facilitate your identity verification process.',
+    buttonLabel: 'Vote Now'
   },
   {
-    stageHeader: 'Candidate Selection',
+    stageHeader: 'Verify your Identity',
     stageDescription:
-      'Carefully select your preferred candidates for each designated position.'
+      'Please put your face inside the circle to verify your identity.',
+    buttonLabel: 'Verify Now'
   },
   {
-    stageHeader: 'Finalize Your Vote',
+    stageHeader: 'Caste Ballot',
     stageDescription:
-      'Confirm your vote for the chosen candidate. Please note, after submission, modifications to your vote will not be permitted.'
+      'Please select which which candidate you want to cast vote.',
+    buttonLabel: 'Submit'
   }
+  // {
+  //   stageHeader: 'Submit your Ballot',
+  //   stageDescription:
+  //     'Confirm your vote for the chosen candidate. Please note, after submission, modifications to your vote will not be permitted.',
+  //   buttonLabel: 'Submit'
+  // }
 ];
-
-// const getOnboardingStage = (stage) => {
-//   switch (stage) {
-//     case stages.ON_BOARDING_FF_SELFIE:
-//       return <FrontFacingSelfie />;
-//     case stages.ON_BOARDING_RF_SELFIE:
-//       return <RightFacingSelfie />;
-//     case stages.ON_BOARDING_LF_SELFIE:
-//       return <LeftFacingSelfie />;
-//   }
-// };
-
-const OnboardingStepper = ({ step }) => {
-  return (
-    <Stepper index={step} colorScheme="primary" size={'sm'}>
-      {steps.map((step, index) => (
-        <Step key={index}>
-          <StepIndicator>
-            <StepStatus
-              complete={<StepIcon />}
-              incomplete={<StepNumber />}
-              active={<StepNumber />}
-            />
-          </StepIndicator>
-
-          <Box flexShrink="0">
-            <StepTitle>{step.title}</StepTitle>
-            {/* <StepDescription>{step.description}</StepDescription> */}
-          </Box>
-
-          <StepSeparator />
-        </Step>
-      ))}
-    </Stepper>
-  );
-};
 
 const ImageUploader = () => {
   const [img, setImg] = useState('');
@@ -147,12 +114,67 @@ const VoteWindow = () => {
   });
   const navigate = useNavigate();
 
+  const createInitialValues = (options) => {
+    return options.reduce(
+      (acc, option, index) => {
+        const scoreKey = `score_${index + 1}`;
+        acc[scoreKey] = 0;
+        return acc;
+      },
+      {
+        positions: [],
+        position: '',
+        selfie: ''
+      }
+    );
+  };
+
+  const radioOptions = [
+    {
+      title: 'President',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'president'
+    },
+    {
+      title: 'Vice President',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'vice_president'
+    },
+    {
+      title: 'Senior Manager',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'senior_manager'
+    },
+    {
+      title: 'Senior Manager',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'senior_manager2'
+    },
+    {
+      title: 'Senior Manager',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'senior_manager3'
+    },
+    {
+      title: 'Senior Manager',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'senior_manager4'
+    },
+    {
+      title: 'Senior Manager',
+      caption: 'Asst. Professor Department of Computer Science & Engineering',
+      value: 'senior_manager5'
+    }
+  ];
+
   const getStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <WebCamComponent />;
+        return <Banner />;
       case 1:
         return <WebCamComponent />;
+      case 2:
+        return <Position radioOptions={radioOptions} type={'APPROVAL'} />;
     }
   };
   return (
@@ -190,26 +212,46 @@ const VoteWindow = () => {
         {stages[activeStep].stageDescription}
       </Text>
       <Formik
-        initialValues={{ photoID: '', selfie: '' }}
-        onSubmit={(values, { setSubmitting }) => {}}
+        initialValues={createInitialValues(radioOptions)}
+        onSubmit={(values, { setSubmitting }) => {
+          console.log(values);
+        }}
       >
-        <Form>{getStepContent()}</Form>
+        <Form>
+          {getStepContent()}
+          <Flex
+            justifyContent={activeStep === 3 ? 'space-around' : 'center'}
+            mt={'20px'}
+          >
+            {/* {activeStep === 3 && (
+              <Button
+                colorScheme="primary"
+                variant={'outline'}
+                w={'140px'}
+                leftIcon={<ArrowBackIcon />}
+                isDisabled={activeStep === 0 ? true : false}
+                onClick={() =>
+                  setActiveStep((prev) => (activeStep >= 1 ? prev - 1 : prev))
+                }
+              >
+                Change Vote
+              </Button>
+            )} */}
+            <Button
+              colorScheme="primary"
+              w={'100px'}
+              type={activeStep === 2 && 'submit'}
+              onClick={() => {
+                if (activeStep < 2) {
+                  setActiveStep((prev) => prev + 1);
+                }
+              }}
+            >
+              {stages[activeStep].buttonLabel}
+            </Button>
+          </Flex>
+        </Form>
       </Formik>
-      <Flex justifyContent={'center'} mt={'20px'}>
-        <Button
-          colorScheme="primary"
-          w={'100px'}
-          onClick={() => {
-            if (activeStep < 2) {
-              setActiveStep((prev) => prev + 1);
-            } else {
-              navigate('/dashboard');
-            }
-          }}
-        >
-          {activeStep === 2 ? 'Finish' : 'Next'}
-        </Button>
-      </Flex>
     </Box>
   );
 };

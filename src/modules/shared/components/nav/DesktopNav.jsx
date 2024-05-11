@@ -53,7 +53,7 @@ const NavItem = ({ label, type }) => {
   );
 };
 const NavRightItems = () => {
-  const { isLoggedIn, logout } = useAuthentication();
+  const { isLoggedIn, logout, userInfo } = useAuthentication();
   const navigate = useNavigate();
 
   const rightItems = [
@@ -109,15 +109,15 @@ const NavRightItems = () => {
   ];
 
   const menuList = [
-    {
-      label: 'Profile',
-      action: '',
-      link: ''
-    },
+    // {
+    //   label: 'Profile',
+    //   action: '',
+    //   link: ''
+    // },
     {
       label: 'Settings',
       action: '',
-      link: ''
+      link: '/settings'
     },
     {
       label: 'Logout',
@@ -147,10 +147,7 @@ const NavRightItems = () => {
         <Menu>
           <MenuButton rightIcon={<ChevronDownIcon />}>
             <Box as={Button} rounded={'full'} bg={'none'}>
-              <Avatar
-                name="Shahriar Rumel"
-                src="https://avatars.githubusercontent.com/u/71602274?v=4"
-              />
+              <Avatar name={userInfo?.fullName} src={userInfo?.userImage} />
             </Box>
           </MenuButton>
           <MenuList>

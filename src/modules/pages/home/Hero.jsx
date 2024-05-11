@@ -5,9 +5,17 @@ import HeroRight from './HeroRight';
 
 const Hero = () => {
   return (
-    <Flex minH={'100svh'} paddingTop={'100px'} position={'relative'} alignItems={'center'}>
-      <HeroLeft />
-      <HeroRight />
+    <Flex
+      minH={'100svh'}
+      className="hero-bg"
+      paddingTop={'100px'}
+      position={'relative'}
+      alignItems={'center'}
+    >
+      <Flex m={'0 auto'} w={['90vw', '70vw', '80vw', '80vw', '80vw', '60vw']}>
+        <HeroLeft />
+        <HeroRight />
+      </Flex>
     </Flex>
   );
 };

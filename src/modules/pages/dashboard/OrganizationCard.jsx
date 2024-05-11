@@ -1,8 +1,17 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  Text
+} from '@chakra-ui/react';
 import React from 'react';
 import Logo from '../../shared/components/Logo';
 import LogoIcon from '../../shared/components/LogoIcon';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircleIcon } from '@chakra-ui/icons';
 
 const BlobGenerator = ({ img }) => {
   return (
@@ -49,14 +58,33 @@ const OrganizationCard = () => {
       rounded={'md'}
       justifyContent={'space-between'}
       alignItems={'center'}
+      pos={'relative'}
     >
       <Box>
-        <Text fontWeight={'600'} fontSize={'20px'}>
+        <Text
+          fontWeight={'600'}
+          lineHeight={'24px'}
+          w={'70%'}
+          fontSize={'20px'}
+          mb={'5px'}
+        >
           Csedu Alumni Association
         </Text>
-        <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>
+        {/* <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>
           General Member
-        </Text>
+        </Text> */}
+        <Tag
+          size="sm"
+          pos="absolute"
+          right="20px"
+          top="20px"
+          variant="outline"
+          rounded={'full'}
+          colorScheme="primary"
+        >
+          <TagLeftIcon as={CheckCircleIcon} />
+          <TagLabel>Member</TagLabel>
+        </Tag>
         <Text fontWeight={'400'} fontSize={'12px'}>
           Member since september 2024
         </Text>

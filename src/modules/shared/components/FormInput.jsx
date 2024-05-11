@@ -2,7 +2,7 @@ import { Box, Input, Select, Text } from '@chakra-ui/react';
 import { ErrorMessage, useField } from 'formik';
 import React, { useState } from 'react';
 
-const TextInput = ({ name, placeholder }) => {
+const TextInput = ({ name, placeholder, ...props }) => {
   const [field, meta, helpers] = useField({ name });
   return (
     <Input
@@ -16,6 +16,7 @@ const TextInput = ({ name, placeholder }) => {
         helpers.setValue(e.target.value);
       }}
       placeholder={placeholder}
+      {...props}
     ></Input>
   );
 };
@@ -31,22 +32,25 @@ const SelectInput = ({ name, placeholder, options }) => {
       defaultValue={placeholder}
     >
       {options?.map((option, index) => (
-        <option disabled={index === 0} value={option}>{option}</option>
+        <option disabled={index === 0} value={option}>
+          {option}
+        </option>
       ))}
     </Select>
   );
 };
-const FormInput = ({ name, label, type, options, placeholder }) => {
+const FormInput = ({ name, label, type, options, placeholder, ...props }) => {
   const getInput = () => {
     switch (type) {
       case 'text':
-        return <TextInput name={name} placeholder={placeholder} />;
+        return <TextInput {...props} name={name} placeholder={placeholder} />;
       case 'select':
         return (
           <SelectInput
             name={name}
             placeholder={placeholder}
             options={options}
+            {...props}
           />
         );
     }

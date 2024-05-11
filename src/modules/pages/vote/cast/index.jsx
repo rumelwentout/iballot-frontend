@@ -3,32 +3,24 @@ import { Box } from '@chakra-ui/react';
 import OnboardingShape from '../../../shared/components/OnboardingShape';
 import Nav from '../../../shared/components/nav';
 import VoteWindow from './VoteWindow';
+import MainLayout from '../../../layout/MainLayout';
 
 const index = () => {
   return (
-    <>
-      <Nav />
+    <MainLayout MainLayout>
+      {/* <Nav /> */}
       <Box
         pos={'relative'}
-        h={'100svh'}
-        overflow={'hidden'}
+        minH={'100svh'}
+        // overflow={'hidden'}
         display={'flex'}
         alignItems={'center'}
         justifyContent={'center'}
+        py={'150px'}
       >
-        <Box
-          w={'105vw'}
-          opacity={0.5}
-          pos={'absolute'}
-          top={'0'}
-          left={'-5vw'}
-          zIndex={-1}
-        >
-          <OnboardingShape />
-        </Box>
         <VoteWindow />
       </Box>
-    </>
+    </MainLayout>
   );
 };
 

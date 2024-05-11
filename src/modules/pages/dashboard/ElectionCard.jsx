@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const VotingIcon = () => {
   return (
@@ -76,17 +76,50 @@ const VotingIcon = () => {
     </svg>
   );
 };
-const ElectionCard = () => {
+const ElectionCard = ({ initialTime = 3500 }) => {
+  const [time, setTime] = useState(initialTime);
+
+  useEffect(() => {
+    if (time === 0) return;
+
+    const intervalId = setInterval(() => {
+      setTime((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [time]);
+
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+  const seconds = time % 60;
+
+  const formatTime = (unit) => unit.toString().padStart(2, '0');
   return (
-    <Flex backgroundColor={'white'} p={'20px'} rounded={'md'} justifyContent={'space-between'}>
+    <Flex
+      backgroundColor={'white'}
+      p={'20px'}
+      rounded={'md'}
+      justifyContent={'space-between'}
+    >
       <Box>
-        <Text fontWeight={'600'} fontSize={'20px'}>Csedu Alumni Association</Text>
-        <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>
+        <Text fontWeight={'600'} fontSize={'20px'}>
           Vote for presidential candidate
         </Text>
-        <Text fontWeight={'400'} fontSize={'12px'}>
-          Ends in 05:05:09
+        <Text fontWeight={'600'} fontSize={'14px'} my={'2px'}>
+          Csedu Alumni Association
         </Text>
+        <Flex alignItems={'center'} gap={'10px'}>
+          <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>
+            Ends in
+          </Text>
+          <Box fontWeight={'400'} fontSize={'12px'}>
+            <span className="countdown font-mono font-bold text-[12px]">
+              <span style={{ '--value': formatTime(hours) }}></span>:
+              <span style={{ '--value': formatTime(minutes) }}></span>:
+              <span style={{ '--value': formatTime(seconds) }}></span>
+            </span>
+          </Box>
+        </Flex>
       </Box>
       <VotingIcon />
     </Flex>

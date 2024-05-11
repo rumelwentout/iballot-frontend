@@ -16,6 +16,7 @@ const OrganizationView = React.lazy(() =>
 );
 
 const CastVote = React.lazy(() => import('../modules/pages/vote/cast'));
+const Settings = React.lazy(() => import('../modules/pages/settings'));
 
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useAuthentication();
@@ -77,6 +78,19 @@ const dashboard = {
   route: Route
 };
 
+const settings = {
+  path: '/settings',
+  exact: true,
+  name: 'Settings component',
+  component: () => (
+    <ProtectedRoute>
+      <Settings />
+    </ProtectedRoute>
+  ),
+  roles: ['User'],
+  route: Route
+};
+
 const organizationAdd = {
   path: '/organization/add',
   exact: true,
@@ -112,5 +126,6 @@ export const appRoutes = [
   dashboard,
   organizationAdd,
   organizationView,
-  castVote
+  castVote,
+  settings
 ];
