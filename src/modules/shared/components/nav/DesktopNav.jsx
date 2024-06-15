@@ -90,7 +90,20 @@ const NavRightItems = () => {
       component: NavItem,
       link: '/organization/view'
     },
-
+    {
+      type: 'LINK_BTN',
+      label: 'Create Election',
+      requiredAuth: true,
+      component: NavItem,
+      link: '/election/create'
+    },
+    {
+      type: 'LINK_BTN',
+      label: 'Create Organization',
+      requiredAuth: true,
+      component: NavItem,
+      link: '/organization/create'
+    },
     {
       type: 'LINK_BTN',
       label: 'Sign up',

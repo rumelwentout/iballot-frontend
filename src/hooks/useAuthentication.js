@@ -28,6 +28,7 @@ export const useAuthentication = () => {
             }
           }
         );
+        console.log(userData?.data);
         setUserInfo({ ...userData?.data, token: token });
       }
     };

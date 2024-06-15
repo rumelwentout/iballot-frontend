@@ -39,11 +39,26 @@ const SelectInput = ({ name, placeholder, options }) => {
     </Select>
   );
 };
-const FormInput = ({ name, label, type, options, placeholder, ...props }) => {
+const FormInput = ({
+  name,
+  label,
+  type,
+  inputType,
+  options,
+  placeholder,
+  ...props
+}) => {
   const getInput = () => {
     switch (type) {
       case 'text':
-        return <TextInput {...props} name={name} placeholder={placeholder} />;
+        return (
+          <TextInput
+            type={inputType}
+            {...props}
+            name={name}
+            placeholder={placeholder}
+          />
+        );
       case 'select':
         return (
           <SelectInput

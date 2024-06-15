@@ -3,9 +3,6 @@ import { Box, Image } from '@chakra-ui/react';
 import { useField } from 'formik';
 import React from 'react';
 
-const image =
-  'https://images.unsplash.com/photo-1600486913747-55e5470d6f40?q=80&w=2970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-
 const RadioOption = ({
   value,
   title,
@@ -13,7 +10,8 @@ const RadioOption = ({
   name,
   field,
   helpers,
-  multi
+  multi,
+  image
 }) => {
   const isChecked = () => {
     if (multi) {
@@ -101,13 +99,14 @@ const Radio = ({ label, name, radioOptions, multi = false }) => {
       <ul className="grid w-full gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-start">
         {radioOptions.map((item) => (
           <RadioOption
-            key={item.value}
+            key={item.id}
             field={field}
             helpers={helpers}
             name={name}
-            title={item.title}
-            value={item.value}
-            caption={item.caption}
+            title={item.fullname}
+            value={item.id}
+            caption={item.institution}
+            image={item.userImage}
             multi={multi}
           />
         ))}
