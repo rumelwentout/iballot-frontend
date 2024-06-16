@@ -11,6 +11,10 @@ const OrganizationAdd = React.lazy(() =>
   import('../modules/pages/organization/add')
 );
 
+const OrganizationRequest = React.lazy(() =>
+  import('../modules/pages/organization/request')
+);
+
 const OrganizationView = React.lazy(() =>
   import('../modules/pages/organization/view')
 );
@@ -133,6 +137,15 @@ const organizationAdd = {
   route: Route
 };
 
+const organizationRequest = {
+  path: '/organization/request',
+  exact: true,
+  name: 'Organization Request component',
+  component: OrganizationRequest,
+  roles: ['User'],
+  route: Route
+};
+
 const organizationView = {
   path: '/organization/view',
   exact: true,
@@ -159,6 +172,7 @@ export const appRoutes = [
   dashboard,
   organizationAdd,
   organizationView,
+  organizationRequest,
   castVote,
   settings,
   createElection,

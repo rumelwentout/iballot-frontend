@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainLayout from '../../../layout/MainLayout';
 import {
   Box,
@@ -13,12 +13,34 @@ import {
 import SearchIcon from '../../../shared/components/SearchIcon';
 import OrganizationRequestCard from './OrganizationRequestCard';
 import { orgsData } from './data';
+import axios from 'axios';
+import { useAuthentication } from '../../../../hooks/useAuthentication';
 
 const index = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const filteredOrganizations = orgsData.filter((x) =>
+
+  const { userInfo } = useAuthentication();
+
+  const [orgs, setOrgs] = useState([]);
+  const getOrganizations = async () => {
+    const data = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URI}/organization`,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo?.token}`
+        }
+      }
+    );
+    setOrgs(data.data);
+  };
+
+  useEffect(() => {
+    if (userInfo) getOrganizations();
+  }, [userInfo]);
+  const filteredOrganizations = orgs.filter((x) =>
     x.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  console.log(orgs);
   return (
     <MainLayout>
       <Flex flexDir={'column'} minH={'100svh'} pt={'80px'} pb={'120px'}>

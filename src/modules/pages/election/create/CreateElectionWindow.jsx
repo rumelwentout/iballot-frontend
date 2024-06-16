@@ -186,7 +186,6 @@ const CreateElectionWindow = () => {
         election_type: data.votingSystem.name
       };
 
-      console.log(requestData);
       return axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/elections/create`,
         requestData,
