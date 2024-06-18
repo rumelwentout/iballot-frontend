@@ -39,7 +39,7 @@ const Position = ({ radioOptions, id, type }) => {
 
   const getVotingForm = (type) => {
     switch (type) {
-      case 'Multiple':
+      case 'Multi':
         return (
           <Radio
             name="positions"
