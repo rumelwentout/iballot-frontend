@@ -76,7 +76,7 @@ const VotingIcon = () => {
     </svg>
   );
 };
-const ElectionCard = ({ initialTime = 3500 }) => {
+const ElectionCard = ({ initialTime = 3500, title }) => {
   const [time, setTime] = useState(initialTime);
 
   useEffect(() => {
@@ -103,10 +103,10 @@ const ElectionCard = ({ initialTime = 3500 }) => {
     >
       <Box>
         <Text fontWeight={'600'} fontSize={'20px'}>
-          Vote for presidential candidate
+          {title}
         </Text>
         <Text fontWeight={'600'} fontSize={'14px'} my={'2px'}>
-          Csedu Alumni Association
+          CSEDU
         </Text>
         <Flex alignItems={'center'} gap={'10px'}>
           <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>

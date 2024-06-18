@@ -82,9 +82,9 @@ const index = () => {
       <Box pos={'relative'} minH={'100svh'} pt={'120px'} pb={'120px'}>
         <Heading letterSpacing={-1}>Ongoing Elections</Heading>
         <Grid templateColumns="repeat(3, 1fr)" gap={'20px'} mt={'20px'}>
-          <ElectionCard />
-          <ElectionCard />
-          <ElectionCard />
+          <ElectionCard title="President Election" />
+          <ElectionCard title="Executive Election 2024" />
+          <ElectionCard title="Vice president Election 2024" />
         </Grid>
 
         <Flex
@@ -122,10 +122,10 @@ const index = () => {
           />
         )}
 
-        <Heading letterSpacing={-1} mt={'40px'}>
+        {/* <Heading letterSpacing={-1} mt={'40px'}>
           Your Past Votes
         </Heading>
-        <VoteHistoryTable />
+        <VoteHistoryTable /> */}
       </Box>
     </MainLayout>
   );

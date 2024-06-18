@@ -150,7 +150,7 @@ const index = () => {
           elections={elections}
           loading={electionLoading}
         /> */}
-        <PoleContent result={electionResult} />
+        <PoleContent result={electionResult} loading={loading} />
       </Box>
     </MainLayout>
   );

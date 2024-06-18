@@ -18,6 +18,7 @@ import { useAuthentication } from '../../../../hooks/useAuthentication';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const NavLeftItems = () => {
+  const { userInfo } = useAuthentication();
   const leftItems = [
     {
       type: 'IMG',
@@ -26,7 +27,7 @@ const NavLeftItems = () => {
           <Logo />
         </Box>
       ),
-      link: '/'
+      link: userInfo ? '/dashboard' : '/'
     }
   ];
   return (
@@ -78,10 +79,13 @@ const NavRightItems = () => {
     },
     {
       type: 'LINK_BTN',
-      label: 'Join Organization',
+      label: userInfo?.role === 'admin' ? 'Join Requests' : 'Join Organization',
       requiredAuth: true,
       component: NavItem,
-      link: '/organization/add'
+      link:
+        userInfo?.role === 'admin'
+          ? '/organization/request'
+          : '/organization/add'
     },
     {
       type: 'LINK_BTN',

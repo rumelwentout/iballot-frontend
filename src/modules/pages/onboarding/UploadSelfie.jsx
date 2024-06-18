@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import WebCamComponent from '../../shared/components/Webcam';
 import { Form, Formik, useField } from 'formik';
 import Reload from './Reload';
+import Verify from './Verify';
 
 const steps = [
   { title: 'Upload Photo ID', description: 'Front Facing Selfie' },
@@ -185,7 +186,7 @@ const UploadSelfie = () => {
       case 1:
         return <WebCamComponent />;
       case 2:
-        return <ImageUploader />;
+        return <Verify />;
     }
   };
   return (
@@ -224,6 +225,7 @@ const UploadSelfie = () => {
           const getNextBtnState = () => {
             if (values?.selfie && activeStep == 1) return false;
             if (values?.photoID?.name && activeStep == 0) return false;
+            if (activeStep == 2) return false;
             return true;
           };
           return (

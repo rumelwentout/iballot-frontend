@@ -66,10 +66,10 @@ const Position = ({ radioOptions, id, type }) => {
   };
   return (
     <Box>
-      <Alert
+      {/* <Alert
         title="This is an approval voting"
         description="You can select multiple candidates to show your approval of them."
-      />
+      /> */}
       {getVotingForm(type)}
     </Box>
   );

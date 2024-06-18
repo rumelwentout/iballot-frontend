@@ -3,8 +3,9 @@ import { Box, Grid, Skeleton, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import PoleCard from './PoleCard';
 
-const PoleContent = ({ result }) => {
+const PoleContent = ({ result, loading }) => {
   const currentTime = new Date().getTime();
   console.log(result);
   return (
@@ -19,28 +20,25 @@ const PoleContent = ({ result }) => {
         Election Result
       </Text>
 
-      {/* {loading ? (
+      {loading ? (
         <Grid templateColumns="repeat(3, 1fr)" gap={'20px'} mt={'20px'}>
           <Skeleton h={'160px'} rounded={'lg'}></Skeleton>
           <Skeleton h={'160px'} rounded={'lg'}></Skeleton>
           <Skeleton h={'160px'} rounded={'lg'}></Skeleton>
         </Grid>
       ) : (
-        <Grid gridTemplateColumns={'repeat(3,1fr)'} gap={'20px'}>
-          {elections
-            ?.filter(
-              (election) => new Date(election.end_time).getTime() > currentTime
-            )
-            ?.map((election) => (
-              <OrganizationVoteCard
-                name={election.name}
-                end_time={election.end_time}
-                institution={election.organization_name}
-                id={election.id}
-              />
-            ))}
+        <Grid gridTemplateColumns={'repeat(1,1fr)'} gap={'20px'}>
+          {result?.candidates?.map((election, index) => (
+            <PoleCard
+              name={election.fullname}
+              votes={election.votes}
+              image={election.userImage}
+              key={index}
+              serial={index}
+            />
+          ))}
         </Grid>
-      )} */}
+      )}
     </Box>
   );
 };
