@@ -37,30 +37,13 @@ const Candidates = ({ radioOptions, type }) => {
     if (loading)
       return <Skeleton h={'180px'} w="180px" rounded={'12px'}></Skeleton>;
 
-    if (type === 'multi')
-      return (
-        <Radio
-          name="candidates"
-          multi={true}
-          radioOptions={candidateList}
-        ></Radio>
-      );
-    else if (type === 'single')
-      return (
-        <Radio
-          name="candidates"
-          multi={false}
-          radioOptions={candidateList}
-        ></Radio>
-      );
-    // else if (type === 'score')
-    //   return (
-    //     <ScoreCard
-    //       name="candidates"
-    //       multi={false}
-    //       radioOptions={candidateList}
-    //     ></ScoreCard>
-    //   );
+    return (
+      <Radio
+        name="candidates"
+        multi={true}
+        radioOptions={candidateList}
+      ></Radio>
+    );
   };
   return <Box>{getVotingForm(type)}</Box>;
 };
