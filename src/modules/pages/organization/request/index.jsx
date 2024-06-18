@@ -103,8 +103,15 @@ const index = () => {
             <Text>Institution</Text>
             <Text>Action</Text>
           </Grid>
-          {reqs?.map((org) => (
-            <OrganizationRequestListItem name={org.name} />
+          {reqs?.map((req) => (
+            <OrganizationRequestListItem
+              name={req.fullname}
+              email={req.email}
+              institution={req.institution}
+              id={org}
+              userId={req.id}
+              image={req.userImage}
+            />
           ))}
         </Box>
         {/* </Grid> */}

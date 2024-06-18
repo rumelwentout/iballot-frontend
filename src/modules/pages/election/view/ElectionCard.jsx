@@ -4,7 +4,7 @@ import LogoIcon from '../../../shared/components/LogoIcon';
 import { AddIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 
-const OrganizationVoteCard = ({
+const ElectionCard = ({
   variant,
   name,
   institution,
@@ -40,7 +40,7 @@ const OrganizationVoteCard = ({
   //   const minutes = Math.floor((time % 3600) / 60);
   //   const seconds = time % 60;
 
-  // console.log(days, hours, minutes, seconds);
+  console.log(days, hours, minutes, seconds);
 
   const formatTime = (unit) =>
     unit === 0 ? '00' : unit.toString().padStart(2, '0');
@@ -64,13 +64,7 @@ const OrganizationVoteCard = ({
           size={'sm'}
           rounded={'full'}
           rightIcon={<ArrowForwardIcon />}
-          onClick={() =>
-            navigate(
-              variant === 'result'
-                ? `/election/result/${id}`
-                : `/vote/cast/${id}`
-            )
-          }
+          onClick={() => navigate(`/vote/cast/${id}`)}
           loadingText="Preparing"
           isLoading={loading}
         >
@@ -105,4 +99,4 @@ const OrganizationVoteCard = ({
   );
 };
 
-export default OrganizationVoteCard;
+export default ElectionCard;

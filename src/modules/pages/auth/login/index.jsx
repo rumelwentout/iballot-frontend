@@ -29,7 +29,7 @@ const index = () => {
     }
   });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (mutation.isError) {
@@ -40,9 +40,9 @@ const index = () => {
   useEffect(() => {
     if (mutation.isSuccess) {
       toast.success('Logged in successfully!');
-      console.log(mutation.data.data.access_token)
+      console.log(mutation.data.data.access_token);
       document.cookie = `token=${mutation.data.data.access_token}; path=/;`;
-      navigate('/dashboard')
+      navigate('/dashboard');
     }
   }, [mutation.isSuccess]);
 
@@ -55,7 +55,7 @@ const index = () => {
         alignItems={'center'}
         justifyContent={'center'}
       >
-        <Box w={['97vw','450px']} px={'20px'} py={'20px'} rounded={'12px'}>
+        <Box w={['97vw', '450px']} px={'20px'} py={'20px'} rounded={'12px'}>
           <Formik
             enableReinitialize={true}
             initialValues={initialValues}
@@ -100,6 +100,7 @@ const index = () => {
               <FormInput
                 label="Password"
                 type={'text'}
+                inputType={'password'}
                 name="password"
                 // placeholder={'Enter your name'}
               />

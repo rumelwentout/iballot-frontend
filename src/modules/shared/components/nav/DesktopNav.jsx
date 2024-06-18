@@ -88,7 +88,7 @@ const NavRightItems = () => {
       label: 'Elections',
       requiredAuth: true,
       component: NavItem,
-      link: '/organization/view'
+      link: '/election/view'
     },
     {
       type: 'LINK_BTN',

@@ -4,6 +4,9 @@ import { useAuthentication } from '../hooks/useAuthentication';
 
 const Home = React.lazy(() => import('../modules/pages/home'));
 const Register = React.lazy(() => import('../modules/pages/auth/register'));
+const AdminRegister = React.lazy(() =>
+  import('../modules/pages/auth/admin/register')
+);
 const Login = React.lazy(() => import('../modules/pages/auth/login'));
 const Onboarding = React.lazy(() => import('../modules/pages/onboarding'));
 const Dashboard = React.lazy(() => import('../modules/pages/dashboard'));
@@ -29,6 +32,11 @@ const CreateElection = React.lazy(() =>
   import('../modules/pages/election/create')
 );
 
+const ViewElection = React.lazy(() => import('../modules/pages/election/view'));
+const ElectionResult = React.lazy(() =>
+  import('../modules/pages/election/result')
+);
+
 const ProtectedRoute = ({ children }) => {
   const { isLoggedIn } = useAuthentication();
   const navigate = useNavigate();
@@ -50,6 +58,15 @@ const register = {
   exact: true,
   name: 'Register component',
   component: Register,
+  roles: ['User'],
+  route: Route
+};
+
+const adminRegister = {
+  path: '/auth/admin/register',
+  exact: true,
+  name: 'Admin Register component',
+  component: AdminRegister,
   roles: ['User'],
   route: Route
 };
@@ -102,6 +119,32 @@ const createElection = {
   route: Route
 };
 
+const viewElection = {
+  path: '/election/view',
+  exact: true,
+  name: 'View Election component',
+  component: () => (
+    <ProtectedRoute>
+      <ViewElection />
+    </ProtectedRoute>
+  ),
+  roles: ['User'],
+  route: Route
+};
+
+const electionResult = {
+  path: '/election/result/:id',
+  exact: true,
+  name: 'Election Result component',
+  component: () => (
+    <ProtectedRoute>
+      <ElectionResult />
+    </ProtectedRoute>
+  ),
+  roles: ['User'],
+  route: Route
+};
+
 const createOrganization = {
   path: '/organization/create',
   exact: true,
@@ -147,7 +190,7 @@ const organizationRequest = {
 };
 
 const organizationView = {
-  path: '/organization/view',
+  path: '/organization/:id/view',
   exact: true,
   name: 'Organization View component',
   component: OrganizationView,
@@ -176,5 +219,8 @@ export const appRoutes = [
   castVote,
   settings,
   createElection,
-  createOrganization
+  createOrganization,
+  viewElection,
+  adminRegister,
+  electionResult
 ];

@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   IconButton,
+  Skeleton,
   Step,
   StepDescription,
   StepIcon,
@@ -16,40 +17,17 @@ import {
   Text,
   useSteps
 } from '@chakra-ui/react';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import WebCamComponent from '../../../shared/components/Webcam';
 import { Form, Formik } from 'formik';
 import Banner from './Banner';
 import Position from './Position';
 import { act } from 'react';
-
-const stages = [
-  {
-    stageHeader: 'Univeristy of Oxford Union',
-    stageDescription:
-      'Please position your face within the frame to facilitate your identity verification process.',
-    buttonLabel: 'Vote Now'
-  },
-  {
-    stageHeader: 'Verify your Identity',
-    stageDescription:
-      'Please put your face inside the circle to verify your identity.',
-    buttonLabel: 'Verify Now'
-  },
-  {
-    stageHeader: 'Caste Ballot',
-    stageDescription:
-      'Please select which which candidate you want to cast vote.',
-    buttonLabel: 'Submit'
-  }
-  // {
-  //   stageHeader: 'Submit your Ballot',
-  //   stageDescription:
-  //     'Confirm your vote for the chosen candidate. Please note, after submission, modifications to your vote will not be permitted.',
-  //   buttonLabel: 'Submit'
-  // }
-];
+import axios from 'axios';
+import { useAuthentication } from '../../../../hooks/useAuthentication';
+import { useMutation } from 'react-query';
+import { toast } from 'sonner';
 
 const ImageUploader = () => {
   const [img, setImg] = useState('');
@@ -167,16 +145,92 @@ const VoteWindow = () => {
     }
   ];
 
+  const [election, setElection] = useState([]);
+
+  const { id } = useParams();
+
+  const { userInfo } = useAuthentication();
+  const [loading, setLoading] = useState(true);
+  const getElectionDetails = async () => {
+    const data = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URI}/elections/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo?.token}`
+        }
+      }
+    );
+    setElection(data.data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (id && userInfo) getElectionDetails();
+  }, [id, userInfo]);
+
+  console.log(election);
   const getStepContent = () => {
     switch (activeStep) {
       case 0:
-        return <Banner />;
+        return <Banner end_time={election.end_time} loading={loading} />;
       case 1:
         return <WebCamComponent />;
       case 2:
-        return <Position radioOptions={radioOptions} type={'APPROVAL'} />;
+        return <Position id={election.id} type={'APPROVAL'} />;
     }
   };
+
+  const stages = [
+    {
+      stageHeader: election?.name,
+      stageDescription: election.organization_name,
+      buttonLabel: 'Vote Now'
+    },
+    {
+      stageHeader: 'Verify your Identity',
+      stageDescription:
+        'Please put your face inside the circle to verify your identity.',
+      buttonLabel: 'Verify Now'
+    },
+    {
+      stageHeader: 'Caste Ballot',
+      stageDescription:
+        'Please select which which candidate you want to cast vote.',
+      buttonLabel: 'Submit'
+    }
+    // {
+    //   stageHeader: 'Submit your Ballot',
+    //   stageDescription:
+    //     'Confirm your vote for the chosen candidate. Please note, after submission, modifications to your vote will not be permitted.',
+    //   buttonLabel: 'Submit'
+    // }
+  ];
+
+  const mutation = useMutation({
+    mutationFn: async (data) => {
+      for (const position of data) {
+        const res = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URI}/elections/vote`,
+          {
+            candidate_user_id: position,
+            election_id: election.id
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo?.token}`
+            }
+          }
+        );
+        console.log(res);
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      toast.success('Ballot Casted Successfully!');
+    }
+  }, [mutation.isSuccess]);
   return (
     <Box
       bg={'white'}
@@ -186,9 +240,19 @@ const VoteWindow = () => {
       padding={'30px'}
       pos={'relative'}
     >
-      <Text textAlign={'center'} fontWeight={'700'} fontSize={'24px'}>
-        {stages[activeStep].stageHeader}
-      </Text>
+      {loading ? (
+        <Skeleton
+          w={'100%'}
+          mb={'20px'}
+          h="50px"
+          rounded={'lg'}
+          mx={'0 auto'}
+        ></Skeleton>
+      ) : (
+        <Text textAlign={'center'} fontWeight={'700'} fontSize={'24px'}>
+          {stages[activeStep].stageHeader}
+        </Text>
+      )}
       <IconButton
         onClick={() => navigate('/organization/view')}
         size={'sm'}
@@ -202,23 +266,34 @@ const VoteWindow = () => {
         rounded={'full'}
         icon={<CloseIcon />}
       />
-      <Text
-        textAlign={'center'}
-        fontSize={'14px'}
-        w={'70%'}
-        margin={'0 auto'}
-        mb={'20px'}
-      >
-        {stages[activeStep].stageDescription}
-      </Text>
+      {loading ? (
+        <Skeleton
+          w={'100%'}
+          mb={'20px'}
+          h="50px"
+          rounded={'lg'}
+          mx={'0 auto'}
+        ></Skeleton>
+      ) : (
+        <Text
+          textAlign={'center'}
+          fontSize={'14px'}
+          w={'70%'}
+          margin={'0 auto'}
+          mb={'20px'}
+        >
+          {stages[activeStep].stageDescription}
+        </Text>
+      )}
       <Formik
         initialValues={createInitialValues(radioOptions)}
         onSubmit={(values, { setSubmitting }) => {
           console.log(values);
+          mutation.mutate(values.positions);
         }}
       >
         <Form>
-          {getStepContent()}
+          {userInfo && id && getStepContent()}
           <Flex
             justifyContent={activeStep === 3 ? 'space-around' : 'center'}
             mt={'20px'}
@@ -237,18 +312,34 @@ const VoteWindow = () => {
                 Change Vote
               </Button>
             )} */}
-            <Button
-              colorScheme="primary"
-              w={'100px'}
-              type={activeStep === 2 && 'submit'}
-              onClick={() => {
-                if (activeStep < 2) {
-                  setActiveStep((prev) => prev + 1);
-                }
-              }}
-            >
-              {stages[activeStep].buttonLabel}
-            </Button>
+            {(activeStep === 0 || activeStep === 1) && (
+              <Button
+                colorScheme="primary"
+                w={'100px'}
+                onClick={() => {
+                  if (activeStep < 2) {
+                    setActiveStep((prev) => prev + 1);
+                  }
+                }}
+              >
+                {stages[activeStep].buttonLabel}
+              </Button>
+            )}
+            {activeStep === 2 && (
+              <Button
+                colorScheme="primary"
+                w={'100px'}
+                type={'submit'}
+                onClick={() => {
+                  if (activeStep < 2) {
+                    setActiveStep((prev) => prev + 1);
+                  }
+                }}
+                isLoading={mutation.isLoading}
+              >
+                {stages[activeStep].buttonLabel}
+              </Button>
+            )}
           </Flex>
         </Form>
       </Formik>

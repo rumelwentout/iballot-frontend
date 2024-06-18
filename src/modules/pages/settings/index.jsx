@@ -56,13 +56,13 @@ const index = () => {
                 profile_pic: userInfo?.userImage,
                 full_name: userInfo?.fullname,
                 email: userInfo?.email,
-                role: 'admin'
+                role: userInfo?.role
               }}
               onSubmit={(values, { setSubmitting }) => {
                 mutation.mutate({
                   fullname: values.full_name,
                   email: values.email,
-                  role: '',
+                  role: values.role,
                   userImage: values.profile_pic
                 });
               }}
@@ -70,7 +70,12 @@ const index = () => {
               <Form>
                 <ImageUploader name="profile_pic" />
                 <FormInput label="Full Name" name="full_name" type={'text'} />
-                <FormInput label="Role" name="role" type={'text'} />
+                <FormInput
+                  isDisabled={true}
+                  label="Role"
+                  name="role"
+                  type={'text'}
+                />
                 <FormInput
                   label="Email"
                   name="email"

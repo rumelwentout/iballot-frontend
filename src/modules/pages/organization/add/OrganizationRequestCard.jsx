@@ -1,10 +1,39 @@
 import { Box, Button, Flex, Text } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LogoIcon from '../../../shared/components/LogoIcon';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckCircleIcon } from '@chakra-ui/icons';
+import { useAuthentication } from '../../../../hooks/useAuthentication';
+import { useMutation } from 'react-query';
+import axios from 'axios';
+import { toast } from 'sonner';
 
-const OrganizationRequestCard = ({ name }) => {
-  const [loading, setLoading] = useState(false);
+const OrganizationRequestCard = ({ id, name }) => {
+  // const [loading, setLoading] = useState(false);
+
+  const { userInfo } = useAuthentication();
+  const mutation = useMutation({
+    mutationFn: () => {
+      const requestData = {
+        organization_id: id
+      };
+
+      return axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/organization/request-membership`,
+        requestData,
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo?.token}`
+          }
+        }
+      );
+    }
+  });
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      toast.success('Request sent Successfully!');
+    }
+  }, [mutation.isSuccess]);
   return (
     <Flex
       //   shadow={'0px 0px 4px 0px rgba(0, 0, 0, 0.15)'}
@@ -23,12 +52,12 @@ const OrganizationRequestCard = ({ name }) => {
           variant={'outline'}
           size={'sm'}
           rounded={'full'}
-          leftIcon={<AddIcon />}
-          onClick={() => setLoading(true)}
+          leftIcon={mutation.isSuccess ? <CheckCircleIcon /> : <AddIcon />}
+          onClick={() => mutation.mutate()}
           loadingText="Requesting to join"
-          isLoading={loading}
+          isLoading={mutation.isLoading}
         >
-          Add organization
+          {mutation.isSuccess ? 'Request Sent' : 'Add organization'}
         </Button>
       </Flex>
       <Box mt={'20px'}>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import MainLayout from '../../../layout/MainLayout';
 import { Box, Flex, Heading, Skeleton, Text } from '@chakra-ui/react';
-import OrganizationViewContent from './OrganizationViewContent';
+// import OrganizationViewContent from './OrganizationViewContent';
 import { useParams } from 'react-router-dom';
 import { useAuthentication } from '../../../../hooks/useAuthentication';
 import axios from 'axios';
+import PoleContent from './PoleContent';
 
 const BlueRect = () => {
   return (
@@ -62,7 +63,7 @@ const Header = ({ ongoing, title, members, loading }) => {
       alignItems={'center'}
       justifyContent={'center'}
       flexDirection={'column'}
-      bg={'#F9CB15'}
+      bg={'#E1E7EF'}
       pos={'relative'}
       h={'400px'}
       // ml={['-10vw', '-30vw', '-20vw', '-20vw', '-20vw', '-40vw']}
@@ -89,48 +90,32 @@ const Header = ({ ongoing, title, members, loading }) => {
       ) : (
         <Heading letterSpacing={-1}>{title}</Heading>
       )}
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        border={'2px'}
-        mt="20px"
-        rounded={'full'}
-        px={'20px'}
-        py={'10px'}
-        gap={'20px'}
-      >
-        <Flex>
-          <Text>{ongoing} Ongoing Elections</Text>
-        </Flex>
-        <Flex>
-          <Text>{members} Members</Text>
-        </Flex>
-      </Flex>
     </Flex>
   );
 };
 const index = () => {
-  const [elections, setElections] = useState([]);
+  const [electionResult, setElectionResult] = useState();
   const { id } = useParams();
   const currentTime = new Date().getTime();
 
   const { userInfo } = useAuthentication();
   const [electionLoading, setElectionLoading] = useState(true);
-  const getElections = async () => {
+
+  const getElectionResult = async () => {
     const data = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URI}/elections/by-organization/${id}`,
+      `${import.meta.env.VITE_BACKEND_URI}/elections/${id}/results`,
       {
         headers: {
           Authorization: `Bearer ${userInfo?.token}`
         }
       }
     );
-    setElections(data.data);
+    setElectionResult(data.data);
     setElectionLoading(false);
   };
 
   useEffect(() => {
-    if (id) getElections();
+    if (id) getElectionResult();
   }, [id]);
 
   const [loading, setLoading] = useState(true);
@@ -138,7 +123,7 @@ const index = () => {
 
   const getOrganizationDetails = async () => {
     const data = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URI}/organization/${id}`,
+      `${import.meta.env.VITE_BACKEND_URI}/elections/${id}`,
       {
         headers: {
           Authorization: `Bearer ${userInfo?.token}`
@@ -150,27 +135,22 @@ const index = () => {
   };
   useEffect(() => {
     setLoading(true);
-    if (userInfo) getOrganizationDetails();
+    if (userInfo) {
+      getOrganizationDetails();
+      getElectionResult();
+    }
   }, [id, userInfo]);
 
-  console.log(org);
+  console.log(electionResult);
   return (
     <MainLayout>
       <Box minH={'100svh'} pt={'80px'} pb={'120px'}>
-        <Header
-          title={org.name}
-          loading={loading}
-          ongoing={
-            elections?.filter(
-              (election) => new Date(election.end_time).getTime() > currentTime
-            ).length
-          }
-          members={org.member_ids?.length}
-        />
-        <OrganizationViewContent
+        <Header title={org.name} loading={loading} />
+        {/* <OrganizationViewContent
           elections={elections}
           loading={electionLoading}
-        />
+        /> */}
+        <PoleContent result={electionResult} />
       </Box>
     </MainLayout>
   );

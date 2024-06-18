@@ -12,6 +12,7 @@ import Logo from '../../shared/components/Logo';
 import LogoIcon from '../../shared/components/LogoIcon';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@chakra-ui/icons';
+import { useAuthentication } from '../../../hooks/useAuthentication';
 
 const BlobGenerator = ({ img }) => {
   return (
@@ -48,8 +49,9 @@ const BlobGenerator = ({ img }) => {
     </svg>
   );
 };
-const OrganizationCard = () => {
+const OrganizationCard = ({ org }) => {
   const navigate = useNavigate();
+  const { userInfo } = useAuthentication();
   return (
     <Flex
       //   shadow={'0px 0px 4px 0px rgba(0, 0, 0, 0.15)'}
@@ -59,16 +61,17 @@ const OrganizationCard = () => {
       justifyContent={'space-between'}
       alignItems={'center'}
       pos={'relative'}
+      minH={'150px'}
     >
       <Box>
         <Text
           fontWeight={'600'}
           lineHeight={'24px'}
-          w={'70%'}
+          w={'80%'}
           fontSize={'20px'}
           mb={'5px'}
         >
-          Csedu Alumni Association
+          {org?.name}
         </Text>
         {/* <Text fontWeight={'600'} fontSize={'12px'} my={'2px'}>
           General Member
@@ -83,21 +86,23 @@ const OrganizationCard = () => {
           colorScheme="primary"
         >
           <TagLeftIcon as={CheckCircleIcon} />
-          <TagLabel>Member</TagLabel>
+          <TagLabel textTransform={'capitalize'}>
+            {userInfo?.role === 'Admin' ? 'Admin' : 'Member'}
+          </TagLabel>
         </Tag>
-        <Text fontWeight={'400'} fontSize={'12px'}>
+        {/* <Text fontWeight={'400'} fontSize={'12px'}>
           Member since september 2024
-        </Text>
+        </Text> */}
         <Button
           colorScheme="primary"
           size={'sm'}
           mt={'20px'}
-          onClick={() => navigate('/organization/view')}
+          onClick={() => navigate(`/organization/${org.id}/view`)}
         >
           View Organization
         </Button>
       </Box>
-      <Box w="50px">
+      <Box w="50px" mt={'40px'}>
         <LogoIcon />
       </Box>
     </Flex>

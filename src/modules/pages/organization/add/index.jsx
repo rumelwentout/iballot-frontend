@@ -75,7 +75,7 @@ const index = () => {
         </InputGroup>
         <Grid templateColumns="repeat(3, 1fr)" gap={'20px'}>
           {filteredOrganizations.map((org) => (
-            <OrganizationRequestCard name={org.name} />
+            <OrganizationRequestCard id={org.id} name={org.name} />
           ))}
         </Grid>
       </Flex>

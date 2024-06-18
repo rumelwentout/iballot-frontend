@@ -25,9 +25,7 @@ const SelectInput = ({ label, name, placeholder, options }) => {
         defaultValue={placeholder}
       >
         {options?.map((option, index) => (
-          <option disabled={index === 0} value={index}>
-            {option.name}
-          </option>
+          <option value={index}>{option.name}</option>
         ))}
       </Select>
     </>

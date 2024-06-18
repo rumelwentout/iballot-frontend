@@ -178,13 +178,17 @@ const CreateElectionWindow = () => {
     mutationFn: (data) => {
       const requestData = {
         name: data.name,
-        candidates: data.candidates,
+        candidates: data.candidates.map((x) => ({
+          user_id: x,
+          vote: 0
+        })),
         organization_id: data.organization.id,
         organization_name: data.organization.name,
         start_time: data.start_time,
         end_time: data.end_time,
         election_type: data.votingSystem.name
       };
+      console.log(requestData);
 
       return axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/elections/create`,
@@ -243,12 +247,12 @@ const CreateElectionWindow = () => {
           start_time: '',
           end_time: '',
           organization: '',
-          votingSystem: 'Single Vote',
+          votingSystem: 0,
           candidates: []
         }}
         onSubmit={(values, { setSubmitting }) => {
           console.log(values);
-          mutation.mutate(values);
+          if (values.candidates.length > 0) mutation.mutate(values);
         }}
       >
         <Form>
@@ -272,18 +276,34 @@ const CreateElectionWindow = () => {
                 Prev:Election Details
               </Button>
             )}
-            <Button
-              colorScheme="primary"
-              min-w={'100px'}
-              type={activeStep === 1 && 'submit'}
-              onClick={() => {
-                if (activeStep < 1) {
-                  setActiveStep((prev) => prev + 1);
-                }
-              }}
-            >
-              {stages[activeStep].buttonLabel}
-            </Button>
+            {activeStep === 0 && (
+              <Button
+                colorScheme="primary"
+                min-w={'100px'}
+                onClick={() => {
+                  if (activeStep < 1) {
+                    setActiveStep((prev) => prev + 1);
+                  }
+                }}
+              >
+                {stages[activeStep].buttonLabel}
+              </Button>
+            )}
+            {activeStep === 1 && (
+              <Button
+                colorScheme="primary"
+                min-w={'100px'}
+                type={'submit'}
+                onClick={() => {
+                  if (activeStep < 1) {
+                    setActiveStep((prev) => prev + 1);
+                  }
+                }}
+                isLoading={mutation.isLoading}
+              >
+                {stages[activeStep].buttonLabel}
+              </Button>
+            )}
           </Flex>
         </Form>
       </Formik>

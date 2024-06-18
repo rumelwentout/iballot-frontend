@@ -1,12 +1,42 @@
 import { Box, Flex, Grid } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Radio } from '../../../shared/components/Radio';
 import { Form, Formik } from 'formik';
 import Alert from '../../../shared/components/Alert';
 import ScoreCard from '../../../shared/components/ScoreCard';
+import { useAuthentication } from '../../../../hooks/useAuthentication';
+import axios from 'axios';
 
-const Position = ({ radioOptions, type }) => {
+const Position = ({ radioOptions, id, type }) => {
   //   console.log(createInitialValues(radioOptions));
+
+  const { userInfo } = useAuthentication();
+  const [candidates, setCandidates] = useState([]);
+  const getCandidates = async () => {
+    const data = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URI}/elections/${id}/candidates`,
+      {
+        headers: {
+          Authorization: `Bearer ${userInfo?.token}`
+        }
+      }
+    );
+    setCandidates(data.data);
+  };
+
+  useEffect(() => {
+    if (id && userInfo) getCandidates();
+  }, [id, userInfo]);
+
+  console.log(candidates);
+
+  const candidatesOptions = candidates.map((x) => ({
+    title: x.fullname,
+    caption: x.institution,
+    value: x.id,
+    image: x.userImage
+  }));
+
   const getVotingForm = (type) => {
     switch (type) {
       case 'APPROVAL':
@@ -14,16 +44,16 @@ const Position = ({ radioOptions, type }) => {
           <Radio
             name="positions"
             multi={true}
-            radioOptions={radioOptions}
+            radioOptions={candidatesOptions}
           ></Radio>
         );
       case 'RANKING':
-        return <Radio name="positon" radioOptions={radioOptions}></Radio>;
+        return <Radio name="positon" radioOptions={candidatesOptions}></Radio>;
 
       case 'SCORE':
         return (
           <Grid templateColumns={'repeat(3,1fr)'} pt="20px" className="gap-2">
-            {radioOptions.map((x, key) => (
+            {candidatesOptions?.map((x, key) => (
               <ScoreCard
                 title={x.title}
                 caption={x.caption}
