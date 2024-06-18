@@ -132,6 +132,7 @@ const index = () => {
                 label="Confirm Password*"
                 type={'text'}
                 name="confirmPassword"
+                inputType={'password'}
               />
               {/* <FormInput
                 label="Institution"
