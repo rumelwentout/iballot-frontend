@@ -127,7 +127,12 @@ const index = () => {
 
               <FormInput label="Full Name*" name="fullName" type={'text'} />
               <FormInput label="Email*" name="email" type={'text'} />
-              <FormInput label="Password*" type={'text'} name="password" />
+              <FormInput
+                label="Password*"
+                inputType={'password'}
+                type={'text'}
+                name="password"
+              />
               <FormInput
                 label="Confirm Password*"
                 type={'text'}

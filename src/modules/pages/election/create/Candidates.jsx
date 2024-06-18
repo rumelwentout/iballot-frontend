@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useField } from 'formik';
 import { useAuthentication } from '../../../../hooks/useAuthentication';
 import { Radio } from './Radio';
+import ScoreCard from '../../../shared/components/ScoreCard';
 
 const Candidates = ({ radioOptions, type }) => {
   const name = 'organization';
@@ -35,13 +36,31 @@ const Candidates = ({ radioOptions, type }) => {
   const getVotingForm = (type) => {
     if (loading)
       return <Skeleton h={'180px'} w="180px" rounded={'12px'}></Skeleton>;
-    return (
-      <Radio
-        name="candidates"
-        multi={true}
-        radioOptions={candidateList}
-      ></Radio>
-    );
+
+    if (type === 'multi')
+      return (
+        <Radio
+          name="candidates"
+          multi={true}
+          radioOptions={candidateList}
+        ></Radio>
+      );
+    else if (type === 'single')
+      return (
+        <Radio
+          name="candidates"
+          multi={false}
+          radioOptions={candidateList}
+        ></Radio>
+      );
+    // else if (type === 'score')
+    //   return (
+    //     <ScoreCard
+    //       name="candidates"
+    //       multi={false}
+    //       radioOptions={candidateList}
+    //     ></ScoreCard>
+    //   );
   };
   return <Box>{getVotingForm(type)}</Box>;
 };
