@@ -39,7 +39,7 @@ const Position = ({ radioOptions, id, type }) => {
 
   const getVotingForm = (type) => {
     switch (type) {
-      case 'APPROVAL':
+      case 'Multiple':
         return (
           <Radio
             name="positions"
@@ -47,10 +47,10 @@ const Position = ({ radioOptions, id, type }) => {
             radioOptions={candidatesOptions}
           ></Radio>
         );
-      case 'RANKING':
+      case 'Single':
         return <Radio name="positon" radioOptions={candidatesOptions}></Radio>;
 
-      case 'SCORE':
+      case 'Score':
         return (
           <Grid templateColumns={'repeat(3,1fr)'} pt="20px" className="gap-2">
             {candidatesOptions?.map((x, key) => (
@@ -58,6 +58,7 @@ const Position = ({ radioOptions, id, type }) => {
                 title={x.title}
                 caption={x.caption}
                 name={`score_${key + 1}`}
+                image={x.image}
               />
             ))}
           </Grid>

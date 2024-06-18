@@ -1,10 +1,11 @@
-import { ArrowBackIcon, CloseIcon } from '@chakra-ui/icons';
+import { ArrowBackIcon, CheckCircleIcon, CloseIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   Flex,
   IconButton,
   Skeleton,
+  Spinner,
   Step,
   StepDescription,
   StepIcon,
@@ -83,6 +84,45 @@ const ImageUploader = () => {
     >
       {/* {img ? <ImagePreview /> : <UploadPlaceHolder />} */}
     </Box>
+  );
+};
+
+const Verify = ({ setActiveStep }) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+      setActiveStep(3);
+    }, 1000);
+  }, []);
+  return (
+    <Flex
+      alignItems={'center'}
+      justifyContent={'center'}
+      w={'100%'}
+      h={'400px'}
+    >
+      {loading ? (
+        <Flex
+          flexDirection="column"
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <Spinner></Spinner>
+          <Text textAlign={'center'}>Verifying...</Text>
+        </Flex>
+      ) : (
+        <Flex
+          flexDirection="column"
+          alignItems={'center'}
+          justifyContent={'center'}
+        >
+          <CheckCircleIcon />
+          <Text textAlign={'center'}>Verified</Text>
+        </Flex>
+      )}
+    </Flex>
   );
 };
 const VoteWindow = () => {
@@ -176,7 +216,9 @@ const VoteWindow = () => {
       case 1:
         return <WebCamComponent />;
       case 2:
-        return <Position id={election.id} type={'APPROVAL'} />;
+        return <Verify setActiveStep={setActiveStep} />;
+      case 3:
+        return <Position id={election.id} type={election.election_type} />;
     }
   };
 
@@ -185,6 +227,12 @@ const VoteWindow = () => {
       stageHeader: election?.name,
       stageDescription: election.organization_name,
       buttonLabel: 'Vote Now'
+    },
+    {
+      stageHeader: 'Verify your Identity',
+      stageDescription:
+        'Please put your face inside the circle to verify your identity.',
+      buttonLabel: 'Verify Now'
     },
     {
       stageHeader: 'Verify your Identity',
@@ -250,7 +298,7 @@ const VoteWindow = () => {
         ></Skeleton>
       ) : (
         <Text textAlign={'center'} fontWeight={'700'} fontSize={'24px'}>
-          {stages[activeStep].stageHeader}
+          {stages[activeStep]?.stageHeader}
         </Text>
       )}
       <IconButton
@@ -282,7 +330,7 @@ const VoteWindow = () => {
           margin={'0 auto'}
           mb={'20px'}
         >
-          {stages[activeStep].stageDescription}
+          {stages[activeStep]?.stageDescription}
         </Text>
       )}
       <Formik
@@ -298,21 +346,7 @@ const VoteWindow = () => {
             justifyContent={activeStep === 3 ? 'space-around' : 'center'}
             mt={'20px'}
           >
-            {/* {activeStep === 3 && (
-              <Button
-                colorScheme="primary"
-                variant={'outline'}
-                w={'140px'}
-                leftIcon={<ArrowBackIcon />}
-                isDisabled={activeStep === 0 ? true : false}
-                onClick={() =>
-                  setActiveStep((prev) => (activeStep >= 1 ? prev - 1 : prev))
-                }
-              >
-                Change Vote
-              </Button>
-            )} */}
-            {(activeStep === 0 || activeStep === 1) && (
+            {activeStep === 0 && (
               <Button
                 colorScheme="primary"
                 w={'100px'}
@@ -325,7 +359,20 @@ const VoteWindow = () => {
                 {stages[activeStep].buttonLabel}
               </Button>
             )}
-            {activeStep === 2 && (
+            {activeStep === 1 && (
+              <Button
+                colorScheme="primary"
+                w={'100px'}
+                onClick={() => {
+                  if (activeStep < 2) {
+                    setActiveStep((prev) => prev + 1);
+                  }
+                }}
+              >
+                {stages[activeStep].buttonLabel}
+              </Button>
+            )}
+            {activeStep === 3 && (
               <Button
                 colorScheme="primary"
                 w={'100px'}
